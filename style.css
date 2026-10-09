@@ -1,0 +1,251 @@
+/* PukiWiki 系攻略 wiki 風のレイアウト（独自に書いたもの） */
+* { box-sizing: border-box; }
+html { font-size: 62.5%; }
+body {
+  margin: 0;
+  background: #eee;
+  color: #222;
+  font: 1.5rem/1.7 "Noto Sans JP", "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+}
+a:link, a:visited { color: #03c; }
+a:hover, a:active { color: #f60; }
+small { font-size: 85%; }
+.muted { color: #777; }
+
+/* ヘッダー */
+#header { background: #42484e; color: #fff; }
+#header .inner, #navi .inner, #footer .inner { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+#header .inner { padding-top: 28px; padding-bottom: 24px; }
+#header .site-title { color: #fff; text-decoration: none; font-size: 2.8rem; font-weight: 700; text-shadow: 2px 2px 8px #000; }
+#header .site-sub { font-size: 1.3rem; color: #ccd; margin-top: 2px; }
+#navi { background: #303030; }
+#navi .inner { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 20px; padding-top: 12px; padding-bottom: 12px; }
+#navi a { color: #fff; font-weight: 700; text-decoration: none; font-size: 1.4rem; }
+#navi a:hover { color: #f60; }
+
+/* 2カラム */
+#wrapper { display: flex; justify-content: center; max-width: 1000px; margin: 8px auto; word-break: break-all; overflow-wrap: break-word; }
+#menubar { order: 1; flex: 0 0 253px; background: #fcfcfc; padding: 20px 12px; font-size: 1.3rem; }
+#body { order: 2; flex: 1 1 auto; min-width: 0; max-width: 747px; background: #fcfcfc; border-left: 1px solid #eee; padding: 20px; }
+
+/* 左メニュー */
+#menubar h2 { color: #fff; background: #42484e; margin: 12px 0; padding: 8px 6px; font-size: 1.5rem; }
+#menubar h2:first-child { margin-top: 0; }
+#menubar h4 { color: #494949; border-left: 5px solid #134d86; margin: 10px 0 4px; padding: 2px 6px; font-size: 1.3rem; }
+#menubar ul { margin: 4px 0; padding: 0; }
+#menubar li { list-style: none; position: relative; padding-left: 14px; margin: 4px 0; line-height: 1.5; }
+#menubar li::before { content: ""; position: absolute; left: 2px; top: .55em; border: 4px solid transparent; border-left-color: #42484e; }
+#menubar ul.types { display: grid; grid-template-columns: 1fr 1fr; gap: 0 4px; }
+#menubar a { text-decoration: none; }
+
+/* ページタイトル */
+.header_body { background: #303030; color: #fff; margin: -20px -20px 24px; padding: 14px 20px 12px; }
+h1.title { margin: 0; font-size: 2.5rem; text-shadow: 3px 3px 10px #000; }
+.lastmodified { font-size: 1.2rem; color: #bbb; margin-top: 4px; }
+
+/* 見出し */
+#body h2 { background: #eff7ff; border-top: 2px solid #7fbfff; border-bottom: 2px solid #7fbfff; margin: 1.5em 0 1em; padding: 1.2rem .8rem; font-size: 2rem; clear: both; }
+#body h3 { background: #f4faff; border-left: 5px solid #aed9f6; margin: 1.8em 0 .8em; padding: .5em .8em; font-size: 1.7rem; line-height: 1.5; }
+#body h4 { border-bottom: 1px solid #134d86; margin: 24px 0 8px; padding-left: 18px; font-size: 1.6rem; position: relative; }
+#body h4::before { content: ""; background: #555; width: 12px; height: 12px; position: absolute; top: 9px; left: 0; }
+#body p { margin: .6em 0; }
+#body ul { padding-left: 23px; }
+
+/* 目次・ボックス */
+table.toc { background: #fbfbfb; border: 1px solid #ddd; margin: 14px 0; padding: 8px 12px; font-size: 1.3rem; min-width: 50%; }
+td.toctitle { font-weight: 700; }
+.toc ul { margin: 0; padding-left: 20px; }
+.toc ul ul { padding-left: 18px; }
+.contentsx a { text-decoration: none; }
+.box, .box-blue, .box-red { background: #fbfbfb; border: 1px solid #ddd; margin: 10px 0; padding: 12px 16px; }
+.box-blue { border-color: #68c; }
+.box-red { border-color: #ff4500; background: #fff; }
+.box p { margin: 0; }
+ul.notes { margin: 0; padding-left: 20px; }
+ul.notes li { margin: 4px 0; }
+.caption { white-space: pre-wrap; font-size: 1.3rem; }
+
+/* 表（見出しは灰色、セルは暗色） */
+.ie5 { margin: 4px 0 10px; }
+.ie5.scroll { overflow-x: auto; }
+table.style_table { border-collapse: collapse; font-size: 1.2rem; }
+table.style_table thead td { color: #fff; background: #2b2b2b; border: 1px solid #666; text-align: center; font-weight: 700; padding: 5px 6px; }
+table.style_table th { background: #dcdcdc; border: 1px solid #aaa; padding: 5px; text-align: center; font-weight: 700; white-space: nowrap; }
+table.style_table tbody td { color: #eee; background: #444; border: 1px solid #777; padding: 6px 5px; }
+table.style_table tbody td.sub { background: #2b2b2b; text-align: center; font-weight: 700; }
+table.style_table td.c { text-align: center; }
+table.style_table td.wrap { white-space: normal; min-width: 160px; }
+table.style_table td a:link, table.style_table td a:visited { color: #40c4ff; }
+table.style_table td small { color: #ccc; }
+.e-mag { color: #0fc !important; }
+.e-fire { color: #f60 !important; }
+.e-thun { color: #ff0 !important; }
+.e-holy { color: #ffb !important; }
+.ie5.small table.style_table { font-size: 1.1rem; }
+.ie5.small td { padding: 4px 2px !important; }
+
+/* 武器ページの情報ボックス（右寄せ） */
+.infobox { float: right; margin: 0 0 10px 12px; }
+.infobox table.style_table { width: 260px; }
+.infobox th { width: 72px; }
+.infobox td { width: 55px; }
+
+/* 武器種ページの2表横並び */
+.flex { display: flex; flex-wrap: wrap; justify-content: center; gap: 0 6px; }
+.flex .ie5 { margin-top: 0; }
+
+/* 折りたたみ・小さい表 */
+details summary { cursor: pointer; color: #40c4ff; }
+.table-block summary { color: #03c; }
+table.mini { border-collapse: collapse; margin: 4px 0; font-size: 1.1rem; }
+table.mini td { padding: 1px 10px 1px 0; border: 0 !important; background: none !important; white-space: nowrap; }
+table.mini td.r { text-align: right; color: #aaa; }
+.table-block { background: #fbfbfb; border: 1px solid #ddd; padding: 6px 10px; margin-bottom: 6px; }
+.table-block table.mini td { color: #222; }
+.table-block:target { border-color: #f60; }
+
+/* ラベル */
+.rar { font-weight: 700; }
+.rar-0 { color: #ddd; } .rar-1 { color: #6cf; } .rar-2 { color: #c9f; } .rar-3 { color: #fc3; }
+.badge-new, .badge-stale, .src {
+  display: inline-block; padding: 0 5px; border-radius: 3px; font-size: 1.1rem; font-weight: 700; line-height: 1.6; vertical-align: 1px;
+}
+.badge-new { background: #c2410c; color: #fff; }
+.badge-stale { background: #e3b341; color: #222; }
+.src { background: #666; color: #fff; margin: 1px 2px 1px 0; }
+.src-2 { background: #b91c1c; }
+.src-3 { background: #2563eb; }
+
+/* トップの武器種表 */
+.menu-table table.style_table { width: 100%; }
+.menu-table tbody td { width: 25%; }
+
+/* 全武器一覧表（weapons-list.js） */
+.filters { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; }
+.filters input[type=search] { flex: 1 1 220px; }
+.filters input, .filters select { height: 30px; padding: 0 8px; border: 1px solid #aaa; background: #fff; font: inherit; font-size: 1.3rem; }
+.check { display: inline-flex; gap: 4px; align-items: center; font-size: 1.3rem; }
+.sortable thead td[data-sort] { cursor: pointer; }
+.sortable thead td.sorted::after { content: " ▼"; font-size: 1rem; }
+.sortable thead td.sorted.asc::after { content: " ▲"; }
+.style_table td.num { text-align: center; }
+.style_table td.zero { color: #888; }
+.style_table td .sub { display: block; color: #aaa; font-size: 1rem; }
+
+/* フッター */
+#footer { background: #333; color: #ccc; font-size: 1.2rem; }
+#footer .inner { padding-top: 14px; padding-bottom: 14px; }
+
+/* スマホ: メニューを本文の下へ */
+@media (max-width: 800px) {
+  #wrapper { flex-direction: column; }
+  #menubar { order: 2; flex: none; }
+  #body { max-width: none; padding: 12px; }
+  .header_body { margin: -12px -12px 16px; }
+  .infobox { float: none; margin: 0 0 10px; }
+  .infobox table.style_table { width: 100%; }
+}
+
+/* タグ絞り込み */
+.tag-filter { background: #fbfbfb; border: 1px solid #ddd; padding: 8px 10px; margin: 8px 0; font-size: 1.2rem; }
+.tag-filter button { border: 0; background: none; color: #03c; cursor: pointer; padding: 1px 2px; font: inherit; }
+.tag-filter button.on { background: #42484e; color: #fff; border-radius: 3px; }
+.tag-filter button.reset { border: 1px solid #aaa; background: #fff; color: #222; border-radius: 3px; padding: 1px 8px; }
+.tag-row { margin-top: 3px; }
+.tag-row small { display: inline-block; min-width: 4.5em; color: #666; }
+.tag-count { color: #666; margin-left: 6px; }
+table.style_table tbody th { text-align: left; font-weight: 400; }
+table.style_table td.hi { color: #fc3; font-weight: 700; }
+
+/* 産まれ直しの比較 */
+.compare { background: #fbfbfb; border: 1px solid #ddd; padding: 6px 10px; }
+.compare select { height: 28px; font: inherit; font-size: 1.3rem; }
+.up { color: #2e7d32; font-weight: 700; }
+.down { color: #c62828; font-weight: 700; }
+table.style_table td small.up { color: #7ee787; }
+table.style_table td small.down { color: #ff7b72; }
+table.style_table td small.same { color: #aaa; }
+table.style_table td.total { font-weight: 700; }
+table.style_table tr.picked th, table.style_table tr.picked td { outline: 2px solid #fc3; outline-offset: -2px; }
+.nowrap, table.style_table td.nowrap { white-space: nowrap; }
+table.style_table th.relic-red { border-left: 5px solid #e05252; }
+table.style_table th.relic-blue { border-left: 5px solid #4a90e2; }
+table.style_table th.relic-yellow { border-left: 5px solid #e8c547; }
+table.style_table th.relic-green { border-left: 5px solid #5cb85c; }
+
+/* 遺物効果ページ */
+.relic-search { margin: 12px 0 6px; }
+.relic-search input { width: 100%; max-width: 420px; height: 32px; padding: 0 10px; border: 1px solid #aaa; font: inherit; font-size: 1.4rem; }
+.cat-nav { background: #fbfbfb; border: 1px solid #ddd; padding: 8px 12px; margin-bottom: 10px; font-size: 1.25rem; line-height: 2; }
+.cat-nav b { display: inline-block; min-width: 5em; color: #42484e; }
+.cat-nav a { margin-right: 10px; white-space: nowrap; }
+table.relic-effects th { min-width: 180px; }
+details.note summary { color: #ccc; font-size: 1.1rem; }
+details.note[open] summary { display: none; }
+table.relic-effects { width: 100%; table-layout: fixed; }
+table.relic-effects col.c-name { width: 42%; }
+table.relic-effects col.c-val { width: 26%; }
+table.relic-effects col.c-note { width: 32%; }
+table.relic-effects th, table.relic-effects td { white-space: normal; word-break: break-word; min-width: 0 !important; }
+table.relic-effects th[title] { cursor: help; }
+.stack { display: inline-block; font-size: 1rem; padding: 0 4px; border-radius: 3px; font-weight: 700; vertical-align: 1px; }
+.stack.yes { background: #2e7d32; color: #fff; }
+.stack.no { background: #888; color: #fff; }
+.stack.unk { background: #bbb; color: #fff; }
+.stack.guess { opacity: .75; }
+.stack.guess small { font-size: .75em; margin-left: 2px; }
+.stack-note { color: #666; }
+table.style_table td.mult.up { color: #7ee787; font-weight: 700; }
+table.style_table td.mult.down { color: #ff7b72; font-weight: 700; }
+table.style_table td.mult.same { color: #bbb; }
+table.style_table td.changed { background: #5a4a10; }
+
+/* 遺物効果: 参考 wiki の解説 */
+.note-link { font-size: .85em; }
+details.ref-note { border: 1px solid #ccc; border-radius: 3px; margin: 6px 0; background: #fafafa; }
+details.ref-note > summary { cursor: pointer; padding: 6px 10px; font-weight: 700; }
+details.ref-note[open] > summary { border-bottom: 1px solid #ddd; }
+.ref-note-body { padding: 4px 12px 8px; overflow-x: auto; }
+.ref-note-body table { font-size: .9em; }
+
+/* 画面幅に収める表（table(..., cols=[...])）。中で折り返して横スクロールを出さない */
+.ie5.fit table.style_table { width: 100%; table-layout: fixed; }
+.ie5.fit th, .ie5.fit td, .ie5.fit .nowrap { white-space: normal !important; word-break: break-word; min-width: 0 !important; }
+
+/* 地図（ミミック・イースターエッグ） */
+img.world-map { display: block; max-width: 100%; height: auto; margin: 6px 0; border: 1px solid #555; }
+details.map-block { margin: 6px 0; }
+details.map-block > summary { cursor: pointer; font-weight: 700; padding: 4px 0; }
+
+/* モーション値 */
+table.style_table td.changed, .changed { background: #6b5a12 !important; color: #fff; }
+table.style_table td.differ { outline: 2px solid #e0a800; outline-offset: -3px; }
+.differ-sample { outline: 2px solid #e0a800; padding: 0 3px; }
+table.style_table td.sub2 { background: #3a3f4a; }
+
+/* 変更履歴（公式） */
+details.changelog { border: 1px solid #ccc; border-radius: 3px; margin: 6px 0; background: #fafafa; }
+details.changelog > summary { cursor: pointer; padding: 6px 10px; font-weight: 700; }
+details.changelog ul { margin: 4px 0 8px; }
+ul.orig li { color: #666; }
+
+.trigger { color: #1a6; font-weight: 700; }
+
+details.skill-block { border: 1px solid #ccc; border-radius: 3px; margin: 4px 0; background: #fafafa; }
+details.skill-block > summary { cursor: pointer; padding: 5px 10px; font-weight: 700; }
+
+/* 火力計算機 */
+.calc fieldset { border: 1px solid #ccc; border-radius: 3px; margin: 6px 0; padding: 6px 10px; background: #fafafa; min-width: 0; }
+.calc legend { font-weight: 700; padding: 0 4px; }
+.calc label { display: inline-block; margin: 2px 6px 2px 0; }
+.calc select { max-width: 100%; }
+.calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 0 10px; }
+.calc-pick select#c-opts { width: 100%; }
+.calc-pick input[type=search] { width: 12em; max-width: 100%; }
+.calc input[type=number] { width: 4.5em; }
+table.calc-mini { border-collapse: collapse; margin: 4px 0; }
+table.calc-mini th, table.calc-mini td { border-bottom: 1px solid #e3e3e3; padding: 1px 8px 1px 0; text-align: left; font-weight: normal; }
+table.calc-sel { width: 100%; }
+.calc-ar p { margin: 6px 0 2px; }
+.calc-off { color: #c33; font-size: .9em; }
+.muted { color: #888; }
