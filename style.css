@@ -68,6 +68,7 @@ ul.notes li { margin: 4px 0; }
 /* 表（見出しは灰色、セルは暗色） */
 .ie5 { margin: 4px 0 10px; }
 .ie5.scroll { overflow-x: auto; }
+.ie5.scroll table.style_table { width: 100%; }   /* 横幅を広げたので、横スクロールの表も本文の幅いっぱいに使う */
 table.style_table { border-collapse: collapse; font-size: 1.2rem; }
 table.style_table thead td { color: #fff; background: #2b2b2b; border: 1px solid #666; text-align: center; font-weight: 700; padding: 5px 6px; }
 table.style_table th { background: #dcdcdc; border: 1px solid #aaa; padding: 5px; text-align: center; font-weight: 700; white-space: nowrap; }
@@ -183,9 +184,12 @@ table.relic-effects th { min-width: 180px; }
 details.note summary { color: #ccc; font-size: 1.1rem; }
 details.note[open] summary { display: none; }
 table.relic-effects { width: 100%; table-layout: fixed; }
-table.relic-effects col.c-name { width: 42%; }
-table.relic-effects col.c-val { width: 26%; }
-table.relic-effects col.c-note { width: 32%; }
+table.relic-effects col.c-name { width: 20%; }
+table.relic-effects col.c-type { width: 8%; }
+table.relic-effects col.c-stack { width: 9%; }
+table.relic-effects col.c-val { width: 17%; }
+table.relic-effects col.c-info { width: 22%; }
+table.relic-effects col.c-note { width: 24%; }
 table.relic-effects th, table.relic-effects td { white-space: normal; word-break: break-word; min-width: 0 !important; }
 table.relic-effects th[title] { cursor: help; }
 .stack { display: inline-block; font-size: 1rem; padding: 0 4px; border-radius: 3px; font-weight: 700; vertical-align: 1px; }
@@ -261,3 +265,8 @@ table.calc-sel { width: 100%; }
 .tier.normal { background: #e8f0fb; color: #1d4f91; border: 1px solid #b7cdea; }
 .tier.strong { background: #fbe9e7; color: #a12a1a; border: 1px solid #eab3aa; font-weight: 700; }
 .tier.gaol { background: #f1ecf8; color: #5b3a8c; border: 1px solid #d3c4ea; }
+
+/* 表の見出しを固定（縦にスクロールしても、見出しの行が画面の上に残る）。
+   横スクロールの表（.ie5.scroll）は、スクロールする箱の中でしか固定できないため対象外 */
+.ie5:not(.scroll) table.style_table thead { position: sticky; top: 0; z-index: 3; }
+.ie5:not(.scroll) table.style_table thead td { box-shadow: 0 1px 0 #666; }
