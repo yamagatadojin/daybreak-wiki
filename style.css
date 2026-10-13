@@ -270,3 +270,7 @@ table.calc-sel { width: 100%; }
    横スクロールの表（.ie5.scroll）は、スクロールする箱の中でしか固定できないため対象外 */
 .ie5:not(.scroll) table.style_table thead { position: sticky; top: 0; z-index: 3; }
 .ie5:not(.scroll) table.style_table thead td { box-shadow: 0 1px 0 #666; }
+/* ドロップテーブルへのリンクで飛んだ行: 固定した見出しに隠れないようにし、目立たせる */
+table.style_table tr[id^="drop-"] { scroll-margin-top: 70px; }
+table.style_table tr[id^="drop-"]:target th, table.style_table tr[id^="drop-"]:target td { background: #3d3410; }
+.tier.night { background: #2f3550; color: #e6e9ff; border: 1px solid #59609a; }
