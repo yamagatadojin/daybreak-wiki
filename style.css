@@ -14,7 +14,7 @@ small { font-size: 85%; }
 
 /* ヘッダー */
 #header { background: #42484e; color: #fff; }
-#header .inner, #navi .inner, #footer .inner { max-width: 1000px; margin: 0 auto; padding: 0 16px; }
+#header .inner, #navi .inner, #footer .inner { max-width: 1400px; margin: 0 auto; padding: 0 16px; }
 #header .inner { padding-top: 28px; padding-bottom: 24px; }
 #header .site-title { color: #fff; text-decoration: none; font-size: 2.8rem; font-weight: 700; text-shadow: 2px 2px 8px #000; }
 #header .site-sub { font-size: 1.3rem; color: #ccd; margin-top: 2px; }
@@ -24,9 +24,9 @@ small { font-size: 85%; }
 #navi a:hover { color: #f60; }
 
 /* 2カラム */
-#wrapper { display: flex; justify-content: center; max-width: 1000px; margin: 8px auto; word-break: break-all; overflow-wrap: break-word; }
+#wrapper { display: flex; justify-content: center; max-width: 1400px; margin: 8px auto; word-break: break-all; overflow-wrap: break-word; }
 #menubar { order: 1; flex: 0 0 253px; background: #fcfcfc; padding: 20px 12px; font-size: 1.3rem; }
-#body { order: 2; flex: 1 1 auto; min-width: 0; max-width: 747px; background: #fcfcfc; border-left: 1px solid #eee; padding: 20px; }
+#body { order: 2; flex: 1 1 auto; min-width: 0; max-width: 1147px; background: #fcfcfc; border-left: 1px solid #eee; padding: 20px; }
 
 /* 左メニュー */
 #menubar h2 { color: #fff; background: #42484e; margin: 12px 0; padding: 8px 6px; font-size: 1.5rem; }
@@ -255,3 +255,9 @@ table.calc-sel { width: 100%; }
 .calc select { max-width: 100%; min-width: 0; box-sizing: border-box; text-overflow: ellipsis; }
 .calc #c-ench, .calc #c-enemy { display: block; width: 100%; margin-top: 2px; }
 .calc label:has(#c-ench), .calc label:has(#c-enemy) { display: block; }
+
+/* 格（ドロップで決まる強さの区分） */
+.tier { display: inline-block; font-size: .78em; padding: 0 5px; border-radius: 3px; line-height: 1.5; vertical-align: middle; white-space: nowrap; }
+.tier.normal { background: #e8f0fb; color: #1d4f91; border: 1px solid #b7cdea; }
+.tier.strong { background: #fbe9e7; color: #a12a1a; border: 1px solid #eab3aa; font-weight: 700; }
+.tier.gaol { background: #f1ecf8; color: #5b3a8c; border: 1px solid #d3c4ea; }
