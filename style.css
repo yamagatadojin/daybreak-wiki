@@ -249,3 +249,9 @@ table.calc-sel { width: 100%; }
 .calc-ar p { margin: 6px 0 2px; }
 .calc-off { color: #c33; font-size: .9em; }
 .muted { color: #888; }
+/* 火力計算機: 長い名前の選択欄（エンチャント・敵など）を枠の幅に収める */
+.calc fieldset { overflow: hidden; }
+.calc label { max-width: 100%; box-sizing: border-box; vertical-align: top; }
+.calc select { max-width: 100%; min-width: 0; box-sizing: border-box; text-overflow: ellipsis; }
+.calc #c-ench, .calc #c-enemy { display: block; width: 100%; margin-top: 2px; }
+.calc label:has(#c-ench), .calc label:has(#c-enemy) { display: block; }
