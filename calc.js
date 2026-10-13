@@ -16,7 +16,11 @@
   const opt = (v, t, sel) => `<option value="${esc(v)}"${sel ? ' selected' : ''}>${esc(t)}</option>`;
 
   let sel = [];          // 選んだ効果 [{o: D.effects の番号, on: 発動中か}]
-  let cut = [100, 100, 100, 100, 100];
+  // 敵のカット率 [標準, 打撃, 斬撃, 刺突, 魔力, 炎, 雷, 聖]（夜の王のページと同じ順）
+  const CUT = ['標準', '打撃', '斬撃', '刺突', '魔力', '炎', '雷', '聖'];
+  let cut = [100, 100, 100, 100, 100, 100, 100, 100];
+  // 物理の種類（AtkParam の atkAttribute: 0 斬撃 1 打撃 2 刺突 3 標準）→ カット率の列
+  const PHYS_CUT = { 0: 2, 1: 1, 2: 3, 3: 0 };
 
   // ---------- 計算 ----------
   function graph(g, x) {
@@ -94,6 +98,26 @@
     return m;
   }
 
+  // 効果時間の無い足し算の攻撃力（「出撃時の武器に○攻撃力を付加」など）。表示攻撃力には × 0.6 で入る
+  function flatAdds(sub, w, eff) {
+    const f = [0, 0, 0, 0, 0];
+    eff.forEach((i) => {
+      for (const md of E[sel[i].o].m) {
+        if (!md.fl) continue;
+        if (md.wt && md.wt !== w.t) continue;
+        if (md.sub.length && !md.sub.some((x) => sub.includes(x))) continue;
+        for (let e = 0; e < 5; e++) f[e] += md.fl[e] * 0.6;
+      }
+    });
+    return f;
+  }
+
+  // エンチャント・脂（同時に1つ）。データの値 × 0.6 が表示攻撃力に足される
+  function enchant() {
+    const x = (D.enchants || [])[+$('c-ench').value];
+    return x ? x.fl.map((v) => v * 0.6) : [0, 0, 0, 0, 0];
+  }
+
   // ---------- 画面 ----------
   const hero = () => D.heroes[+$('c-hero').value];
   const weapon = () => D.weapons[+$('c-weapon').value];
@@ -132,7 +156,7 @@
 
   function hitsAt(tab, j) {
     const out = [];
-    for (let k = j; k < j + 5; k++) if (tab[k]) out.push([tab[k][0], [0, 0, 0, 0, 0], tab[k][1]]);
+    for (let k = j; k < j + 5; k++) if (tab[k]) out.push([tab[k][0], [0, 0, 0, 0, 0], tab[k][1], tab[k][2], 0]);
     return out;
   }
 
@@ -149,14 +173,16 @@
       + (h.l.some((x) => x.lv === lv) ? '' : '<small class="muted">このレベルの能力値は推定</small>');
 
     const st5 = total.slice(3, 8);
-    if (hand === 200 && $('c-str15').checked) st5[0] = Math.floor(st5[0] * 1.5);
     const ap = attackPower(w, st5);
     const { tab, hero: heroMotion } = motionTable(w, h);
     const r1 = tab[hand] ? tab[hand][0] : [100, 100, 100, 100, 100];
-    const shown = ap.map((x, e) => x * r1[e] / 100);
+    const ench = enchant();
+    const fl1 = flatAdds(tab[hand] ? tab[hand][1] : [], w, eff);
+    const shown = ap.map((x, e) => Math.max(0, x + fl1[e]) * r1[e] / 100);
     const shownTotal = shown.reduce((a, b) => a + Math.floor(b), 0);
-    $('c-ar').innerHTML = `<p><b>表示攻撃力 ${shownTotal}</b>（${hand ? '両手' : '片手'}）`
-      + ` <small>${shown.map((x, e) => (w.a[e] ? `${ELEM[e]} ${Math.floor(x)}` : '')).filter(Boolean).join(' ／ ')}</small>`
+    const enchShown = ench.reduce((a, v, e) => a + v * r1[e] / 100, 0);
+    $('c-ar').innerHTML = `<p><b>表示攻撃力 ${shownTotal}${enchShown ? ' + ' + Math.floor(enchShown) : ''}</b>（${hand ? '両手' : '片手'}）`
+      + ` <small>${shown.map((x, e) => (x ? `${ELEM[e]} ${Math.floor(x)}` : '')).filter(Boolean).join(' ／ ')}</small>`
       + `${heroMotion ? '<br><small>キャラ専用モーション</small>' : ''}</p>`
       + `<small>図録の攻撃力 ${w.a.map((x, e) => (x ? ELEM[e] + ' ' + x : '')).filter(Boolean).join(' ／ ')}`
       + `、補正 ${['筋', '技', '知', '信', '神'].map((n, s) => (w.s[s] ? n + ' ' + w.s[s] : '')).filter(Boolean).join(' ')}</small>`;
@@ -175,12 +201,20 @@
 
     // 攻撃ごとのダメージ
     const rows = [];
-    const line = (label, hits, note) => {
+    // gc = ガードカウンター（最終段のエンチャントはモーション値でなく × 1。参考 wiki の検証）
+    const line = (label, hits, note, gc) => {
       if (!hits.length) return;
-      const dmg = hits.map(([mv, fixed, sub]) => {
+      const dmg = hits.map(([mv, fixed, sub, attr, bullet], n) => {
         const m = multipliers(sub, w, eff);
+        const fl = flatAdds(sub, w, eff);
+        // 253 / 252 = 武器の物理の種類（1つ目 / 2つ目）を使う
+        const a = attr === 253 ? w.p[0] : attr === 252 ? w.p[1] : attr;
+        const physCut = cut[PHYS_CUT[a] !== undefined ? PHYS_CUT[a] : 0];
         let d = 0;
-        for (let e = 0; e < 5; e++) d += (ap[e] * mv[e] / 100 + fixed[e]) * m[e] * cut[e] / 100;
+        for (let e = 0; e < 5; e++) {
+          const en = bullet ? 0 : ench[e] * (gc && n === hits.length - 1 ? 100 : mv[e]) / 100;   // 弾にはエンチャントが乗らない
+          d += (Math.max(0, ap[e] + fl[e]) * mv[e] / 100 + fixed[e] + en) * m[e] * (e ? cut[e + 3] : physCut) / 100;
+        }
         return Math.floor(d);
       });
       const sum = dmg.reduce((a, b) => a + b, 0);
@@ -188,7 +222,7 @@
       rows.push(`<tr><th>${esc(label)}${note ? ` <small class="muted">${note}</small>` : ''}</th><td class="c">${mvText}</td>`
         + `<td class="c">${dmg.length > 1 ? dmg.join(' + ') : ''}</td><td class="c"><b>${sum}</b></td></tr>`);
     };
-    for (const [j, label] of ATTACKS) line(label, hitsAt(tab, j + hand));
+    for (const [j, label] of ATTACKS) line(label, hitsAt(tab, j + hand), '', j === 180);
     for (const [j, label] of OTHER) line(label, hitsAt(tab, j));
     if (!hand) {
       let n = 0;
@@ -215,7 +249,7 @@
   function saveHash() {
     const w = weapon(), h = hero();
     const st = { h: h.id, l: +$('c-lv').value, w: w.id, d: +$('c-hand').value, s: +$('c-skill').value,
-      e: sel.map((s) => [E[s.o].id, E[s.o].k, s.on ? 1 : 0]), c: cut, x: $('c-str15').checked ? 1 : 0 };
+      e: sel.map((s) => [E[s.o].id, E[s.o].k, s.on ? 1 : 0]), c: cut, en: +$('c-enemy').value, n: +$('c-ench').value };
     try { history.replaceState(null, '', '#' + encodeURIComponent(JSON.stringify(st))); } catch (e) { /* 無視 */ }
   }
 
@@ -230,8 +264,9 @@
       if (st.d !== undefined) $('c-hand').value = st.d;
       if (st.s !== undefined) fillSkills(st.s);
       sel = (st.e || []).map(([id, k, on]) => ({ o: E.findIndex((o) => o.id === id && o.k === k), on: !!on })).filter((s) => s.o >= 0);
-      if (Array.isArray(st.c) && st.c.length === 5) cut = st.c.map(Number);
-      $('c-str15').checked = !!st.x;
+      if (Array.isArray(st.c) && st.c.length === 8) cut = st.c.map(Number);
+      if (st.en !== undefined) $('c-enemy').value = st.en;
+      if (st.n !== undefined) $('c-ench').value = st.n;
     } catch (e) { /* 初期状態のまま */ }
   }
 
@@ -247,7 +282,14 @@
       + `<select id="c-opts-${k}" data-opts="${k}" size="6"></select><br>`
       + `<button type="button" data-add="${k}">追加</button> <small>（ダブルクリックでも追加）</small>`
       + `<div id="c-sel-${k}"></div></fieldset>`).join('');
-    $('c-cut').innerHTML = ELEM.map((n, e) => `<label>${n} <input type="number" min="0" max="300" step="5" data-cut="${e}" value="${cut[e]}"></label>`).join(' ');
+    const srcs = [...new Set((D.enchants || []).map((x) => x.src))];
+    $('c-ench').innerHTML = opt(-1, '（なし）') + srcs.map((src) => `<optgroup label="${esc(src)}">`
+      + D.enchants.map((x, i) => (x.src === src ? opt(i, `${x.n}（${x.fl.map((v, e) => (v ? ELEM[e] + '+' + Math.floor(v * 0.6) : '')).filter(Boolean).join('・')}）`) : '')).join('')
+      + '</optgroup>').join('');
+    const groups = [...new Set((D.enemies || []).map((x) => x.g))];
+    $('c-enemy').innerHTML = opt(-1, '（手入力）') + groups.map((g) => `<optgroup label="${esc(g)}">`
+      + D.enemies.map((x, i) => (x.g === g ? opt(i, x.n) : '')).join('') + '</optgroup>').join('');
+    $('c-cut').innerHTML = CUT.map((n, e) => `<label>${n} <input type="number" min="0" max="300" step="5" data-cut="${e}" value="${cut[e]}"></label>`).join(' ');
     fillWeapons();
     if (location.hash.length > 1) loadHash();
     $('c-cut').querySelectorAll('input').forEach((x) => { x.value = cut[+x.dataset.cut]; });
@@ -255,7 +297,7 @@
 
     $('c-type').addEventListener('change', () => { fillWeapons(); render(); });
     $('c-weapon').addEventListener('change', () => { fillSkills(); render(); });
-    ['c-hero', 'c-lv', 'c-hand', 'c-skill', 'c-str15'].forEach((id) => $(id).addEventListener('change', render));
+    ['c-hero', 'c-lv', 'c-hand', 'c-skill', 'c-ench'].forEach((id) => $(id).addEventListener('change', render));
     const addSel = (k) => {
       const box = $('c-opts-' + k), i = +box.value;
       if (box.value === '' || isNaN(i)) return;
@@ -279,7 +321,13 @@
     });
     $('c-cut').addEventListener('input', (ev) => {
       const e = ev.target.dataset.cut;
-      if (e !== undefined) { cut[+e] = Math.max(0, +ev.target.value || 0); render(); }
+      if (e !== undefined) { cut[+e] = Math.max(0, +ev.target.value || 0); $('c-enemy').value = '-1'; render(); }
+    });
+    $('c-enemy').addEventListener('change', () => {
+      const x = (D.enemies || [])[+$('c-enemy').value];
+      cut = x ? x.c.map((v) => Math.round(v * 100)) : [100, 100, 100, 100, 100, 100, 100, 100];
+      $('c-cut').querySelectorAll('input').forEach((el) => { el.value = cut[+el.dataset.cut]; });
+      render();
     });
     render();
   }
