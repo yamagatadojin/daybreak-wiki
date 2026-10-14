@@ -274,3 +274,4 @@ table.calc-sel { width: 100%; }
 table.style_table tr[id^="drop-"] { scroll-margin-top: 70px; }
 table.style_table tr[id^="drop-"]:target th, table.style_table tr[id^="drop-"]:target td { background: #3d3410; }
 .tier.night { background: #2f3550; color: #e6e9ff; border: 1px solid #59609a; }
+.badge-changed { background: #7c3aed; }
