@@ -90,7 +90,7 @@
     const m = [1, 1, 1, 1, 1];
     eff.forEach((i) => {
       for (const md of E[sel[i].o].m) {
-        if (md.wt && md.wt !== w.t) continue;
+        if (md.wt && md.wt !== w.t && md.wt !== (D.wtShare || {})[w.t]) continue;
         if (md.sub.length && !md.sub.some((x) => sub.includes(x))) continue;
         for (let e = 0; e < 5; e++) m[e] *= md.r[e];
       }
@@ -104,7 +104,7 @@
     eff.forEach((i) => {
       for (const md of E[sel[i].o].m) {
         if (!md.fl) continue;
-        if (md.wt && md.wt !== w.t) continue;
+        if (md.wt && md.wt !== w.t && md.wt !== (D.wtShare || {})[w.t]) continue;
         if (md.sub.length && !md.sub.some((x) => sub.includes(x))) continue;
         for (let e = 0; e < 5; e++) f[e] += md.fl[e] * 0.6;
       }
